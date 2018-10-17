@@ -20,6 +20,15 @@ c
 table(b)
 b
 ```
+```{r}
+library(googlesheets)
+gs_auth(new_user = TRUE)
+
+```
+
+```{r}
+
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
