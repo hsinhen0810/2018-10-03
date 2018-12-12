@@ -1,5 +1,5 @@
 ---
-title: "2018-10-17"
+title: "2018-12-12"
 output: html_document
 ---
 ```{r}
@@ -23,6 +23,17 @@ b
 ```{r}
 library(googlesheets)
 gs_auth(new_user = TRUE)
+## ----ans22---------------------------------------------------------------
+deadline3 <- ymd_hms("2018-11-06 00:00:00",tz="Asia/Taipei")
+hwSubmit3 <- hwSubmit[hwSubmit$作業代碼=="Exercise3",]
+hwSubmit3 %>%
+  mutate(
+    截止時差=difftime(deadline3,Timestamp,units="hours")
+  ) -> 
+  hwSubmit3
+hwSubmit[hwSubmit$作業代碼 =="Exercise3",] -> hwSubmit3
+hwSubmit3$Timestamp -> time
+difftime("2018-11-06 00:00:00", time, units="hours") -> hwSubmit3$截止時差
 
 ```
 
@@ -43,26 +54,78 @@ libraryData %>%
   ) -> libraryData
 ```
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r}
+library(readr)
+libraryData <- read_csv("https://raw.githubusercontent.com/tpemartin/github-data/master/library100_102.csv")
 ```
 
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+library(dplyr)
+libraryData$書籍館藏地 %>% as.factor %>% levels -> storageLocations
+storageLocations
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r}
+# 0
+allBorrowCount <- vector("numeric",18)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+for(i in c(1:18)){# 1
+storageLocation_i <- storageLocations[i] 
+# 2
+numericalIndexForSubsample<-which(libraryData$書籍館藏地==storageLocation_i)
+subsample_i <- libraryData[numericalIndexForSubsample,]
+# 3
+borrowCount_i <- nrow(subsample_i)
+# 4
+allBorrowCount[[i]] <-borrowCount_i}
+
+allBorrowCount
+```
+
+```{r}
+library(dplyr)
+libraryData$學院 %>% as.factor %>% levels -> storageColleges
+storageColleges
+```
+
+```{r}
+CollegeBorrowCount <- vector("numeric",length(storageCollege)) #可把數字改成length()
+for(i in c(1:length(storageCollege))){# 1
+storageCollege_i <- storageColleges[i] 
+# 2
+numericalIndexForSubsample<-which(libraryData$學院==storageCollege_i)
+subsample_i <- libraryData[numericalIndexForSubsample,]
+# 3
+borrowCount_i <- nrow(subsample_i)
+# 4
+CollegeBorrowCount[[i]] <-borrowCount_i}
+
+CollegeBorrowCount
+
+```
+
+
+```{r}
+library(dplyr)
+libraryData$學號 %>% as.factor %>% levels -> Students
+##或者寫成libraryData$學號 %>% unique -> Students
+Students
+```
+
+```{r}
+StudentBorrowCount <- vector("numeric",length(Students)) #可把數字改成length()
+for(i in c(1:length(Students))){# 1
+Student_i <- Students[i] 
+# 2
+numericalIndexForSubsample<-which(libraryData$學號==Student_i)
+subsample_i <- libraryData[numericalIndexForSubsample,]
+# 3
+borrowCount_i <- nrow(subsample_i)
+# 4
+StudentBorrowCount[[i]] <-borrowCount_i}
+
+max(StudentBorrowCount)
+```
+
