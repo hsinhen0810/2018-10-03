@@ -53,6 +53,12 @@ libraryData %>%
     借閱時間=ymd_hms(借閱時間,tz="Asia/Taipei")
   ) -> libraryData
 ```
+```{r}
+library(dplyr)
+libraryData["書籍館藏地"] %>% class
+
+libraryData[["書籍館藏地"]] %>% class
+```
 
 ```{r}
 library(readr)
@@ -127,5 +133,25 @@ borrowCount_i <- nrow(subsample_i)
 StudentBorrowCount[[i]] <-borrowCount_i}
 
 max(StudentBorrowCount)
+```
+
+```{r}
+b<-list("a","b",1:10)
+typeof(b)
+a<-c(1:10)
+typeof(a)
+```
+
+```{r}
+b2<-list("a","b",1:10,
+        list(
+          "Mr Smith",
+          data.frame(
+            v1=c(1,2),
+            v2=c("aa","bb"),
+            stringsAsFactors = F
+          )
+        ))
+b2
 ```
 
